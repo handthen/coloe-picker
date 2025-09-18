@@ -1,0 +1,155 @@
+const style = `
+ 
+`;
+
+const getBody = () => `
+<style>
+  .upto-color-wrapper {
+    position: relative;
+    width: 300px;
+    height: 150px;
+    font-size: 0;
+}
+.canvas-point {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    position: absolute;
+    background: transparent;
+    box-sizing: border-box;
+    right: 0;
+    top: 0;
+}
+ </style>
+ <div id="upto-color-wrapper" class="upto-color-wrapper">
+        <canvas id="color_picker_canvas" style="width: 300px;height: 150px;"></canvas>
+        <div id="point" class="canvas-point"></div>
+ </div>
+`;
+
+const state = {
+  width: 300,
+  height: 150,
+  color: "#1677FF",
+  position: {
+    x: -8,
+    y: -8,
+    targetX: 0,
+    targetY: 0,
+    oldX: 0,
+    oldY: 0,
+  },
+};
+
+class ColorPicker extends HTMLElement {
+  state = state;
+  _canvas = null;
+  _ctx = null;
+  _point = null;
+  static observedAttributes = ["color"];
+  constructor() {
+    super();
+    const shadow = this.attachShadow({ mode: "open" });
+    this._temp = this._getTemp(getBody());
+    this._canvas = this._temp.querySelector("#color_picker_canvas");
+    this._point = this._temp.querySelector("#point");
+    shadow.appendChild(this._temp);
+  }
+  setPosition(obj) {
+    obj.y && this._point.style.setProperty("top", obj.y + "px");
+    obj.x && this._point.style.setProperty("left", obj.x + "px");
+    this.state.position = { ...this.state.position, ...obj };
+  }
+
+  initCanvasColor(color) {
+    const { width, height } = this._canvas;
+    const ctx = this._ctx;
+    const g = ctx.createLinearGradient(width / 2, 0, width / 2, height);
+    g.addColorStop(0, "#fff");
+    g.addColorStop(1, "#000");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, width, height);
+    const g2 = ctx.createLinearGradient(0, 0, width, 0);
+    g2.addColorStop(0, "transparent");
+    g2.addColorStop(0.06, "transparent");
+    // g2.addColorStop(0.9, "#1677FF")
+    g2.addColorStop(1, color);
+    ctx.fillStyle = g2;
+    ctx.fillRect(0, 0, width, height);
+  }
+
+  changeColor(e) {
+    const { offsetX, offsetY } = e;
+    // saveColor(offsetX, offsetY)
+    this.setPosition({ x: offsetX - 8, y: offsetY - 8 });
+    this.mousedown(e);
+  }
+  mousedown(e) {
+    const { clientX, clientY } = e;
+    const state = this.state;
+    state.oldX = state.x;
+    state.oldY = state.y;
+    this.setPosition({
+      oldX: state.position.x,
+      oldY: state.position.y,
+      targetX: clientX,
+      targetY: clientY,
+    });
+    this._mouseup = this.mouseup.bind(this);
+    this._mousemove = this.mousemove.bind(this);
+    document.addEventListener("mouseup", this._mouseup);
+    document.addEventListener("mousemove", this._mousemove);
+  }
+
+  mousemove(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const { clientX, clientY } = e;
+    const { targetX, targetY, oldX, oldY, width, height } = this.state.position;
+    let x = clientX - targetX + oldX;
+    let y = clientY - targetY + oldY;
+
+    if (x >= width - 8) {
+      x = width - 8;
+    }
+    if (x <= -8) {
+      x = -8;
+    }
+    if (y >= height - 8) {
+      y = height - 8;
+    }
+    if (y <= -8) {
+      y = -8;
+    }
+    // saveColor(x, y)
+    this.setPosition({ x, y });
+  }
+  mouseup(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    document.removeEventListener("mouseup", this._mouseup);
+    document.removeEventListener("mousemove", this._mousemove);
+  }
+  connectedCallback() {
+    this._ctx = this._canvas.getContext("2d");
+    this.initCanvasColor(this.state.color);
+
+    this._canvas.addEventListener("mousedown", this.changeColor.bind(this));
+    this._point.addEventListener("mousedown", this.mousedown.bind(this));
+  }
+  disconnectedCallback() {
+    console.log("disconnectedcallback");
+  }
+  adoptedCallback() {}
+  attributeChangedCallback(name, oldVal, newVal) {
+    console.log("attributeChangedCallback", name, oldVal, newVal);
+  }
+
+  _getTemp(html) {
+    const template = document.createElement("template");
+    template.innerHTML = html;
+    return template.content.cloneNode(true);
+  }
+}
+export default ColorPicker;
