@@ -11,3 +11,5 @@ if (typeof window != undefined) {
   //       console.log(err);
   //     });
 }
+
+export default ColorPicker;

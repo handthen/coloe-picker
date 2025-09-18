@@ -1,6 +1,4 @@
-const style = `
- 
-`;
+import { toScale16 } from "../utils/index.js";
 
 const getBody = () => `
 <style>
@@ -130,6 +128,30 @@ class ColorPicker extends HTMLElement {
     e.stopPropagation();
     document.removeEventListener("mouseup", this._mouseup);
     document.removeEventListener("mousemove", this._mousemove);
+    this.saveColor();
+  }
+  saveColor() {
+    try {
+      let { x, y } = this.state.position;
+      x = x < 0 ? 0 : x;
+      y = y < 0 ? 0 : y;
+      const data = this._ctx.getImageData(x, y, 1, 1)?.data;
+      const rgba = `rgb(${data[0]},${data[1]},${data[2]},${data[3]})`;
+      const color = {
+        rgba,
+        b16: toScale16(rgba),
+      };
+      const event = new CustomEvent("change", {
+        detail: color,
+        bubbles: true,
+        composed: true,
+      });
+      this.dispatchEvent(event);
+      this.setPosition({ x, y });
+      return rgba;
+    } catch (e) {
+      console.log(e);
+    }
   }
   connectedCallback() {
     this._ctx = this._canvas.getContext("2d");
