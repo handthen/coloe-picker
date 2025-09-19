@@ -92,7 +92,7 @@ export default class ColorOpacity extends HTMLElement {
       this.initCanvasColor();
     }
   }
-  attributechangeCallback(name, oldVal, newVal) {
+  attributeChangedCallback(name, oldVal, newVal) {
     switch (name) {
       case "color":
         this.initCanvasColor();
@@ -104,9 +104,8 @@ export default class ColorOpacity extends HTMLElement {
   mousedown(e) {
     e.preventDefault();
     const { clientX, offsetX, target } = e;
-    const clientWidth = target.clientWidth;
     if (target.id !== "side-crice") {
-      this.state.x = offsetX - 8;
+      this.state.x = offsetX - 6;
     }
     this.state.oldX = this.state.x;
     this.setPosition({ ...this.state, targetX: clientX });
@@ -128,8 +127,8 @@ export default class ColorOpacity extends HTMLElement {
     }
     this.setPosition({ ...this.state, x });
   }
-
   mouseup(e) {
+    console.log("===up");
     document.removeEventListener("mouseup", this._mouseup);
     document.removeEventListener("mousemove", this._mousemove);
     this._emit();
@@ -158,10 +157,10 @@ export default class ColorOpacity extends HTMLElement {
   }
   _emit() {
     const width = this.state.width;
-    const offset = this.state.x;
+    const offset = this.state.x + 12;
     const event = new CustomEvent("opacitychange", {
       detail: {
-        opacity: +Number(offset / width).toFixed(2),
+        opacity: Math.min(+Number(offset / width).toFixed(2), 1),
       },
       bubbles: true,
       composed: true,

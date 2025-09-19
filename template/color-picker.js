@@ -1,5 +1,4 @@
 import { toScale16 } from "../utils/index.js";
-import colorSide from "./color-side.js";
 
 const getBody = () => `
 <style>
@@ -65,20 +64,22 @@ class ColorPicker extends HTMLElement {
     const { width, height } = this._canvas;
     const ctx = this._ctx;
     if (!ctx) return;
+    ctx.fillStyle = "#fff";
+    ctx.clearRect(0, 0, width, height);
     const g = ctx.createLinearGradient(width / 2, 0, width / 2, height);
     g.addColorStop(0, "#fff");
     g.addColorStop(1, "#000");
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, width, height);
-    const g2 = ctx.createLinearGradient(0, 0, width, 0);
-    g2.addColorStop(0, "transparent");
-    g2.addColorStop(0.06, "transparent");
-    // g2.addColorStop(0.9, "#1677FF")
     if (color) {
-      g2.addColorStop(1, color);
+      const g2 = ctx.createLinearGradient(0, 0, width, 0);
+      g2.addColorStop(0, "transparent");
+      g2.addColorStop(0.06, "transparent");
+      // g2.addColorStop(0.9, "#1677FF")
+      g2.addColorStop(1, "#000");
+      ctx.fillStyle = g2;
+      ctx.fillRect(0, 0, width, height);
     }
-    ctx.fillStyle = g2;
-    ctx.fillRect(0, 0, width, height);
   }
 
   changeColor(e) {
@@ -141,7 +142,7 @@ class ColorPicker extends HTMLElement {
       x = x < 0 ? 0 : x;
       y = y < 0 ? 0 : y;
       const data = this._ctx.getImageData(x, y, 1, 1)?.data;
-      const rgba = `rgb(${data[0]},${data[1]},${data[2]},${data[3]})`;
+      const rgba = `rgba(${data[0]},${data[1]},${data[2]},${data[3]})`;
       const color = {
         rgba,
         b16: toScale16(rgba),
@@ -166,7 +167,7 @@ class ColorPicker extends HTMLElement {
     this.state.height = height;
     // console.log(this.color);
     if (!this._init) {
-      this.initCanvasColor(this.color || "#1677FF");
+      this.initCanvasColor(this.color);
       this._init = true;
     }
 
@@ -178,9 +179,8 @@ class ColorPicker extends HTMLElement {
   }
   adoptedCallback() {}
   attributeChangedCallback(name, oldVal, newVal) {
-    console.log("attributeChangedCallback", name, oldVal, newVal);
-    if (name == "color") {
-      this.initCanvasColor(newVal || "#1677FF");
+    if (name == "color" && newVal) {
+      this.initCanvasColor(newVal);
       this._init = true;
     }
   }

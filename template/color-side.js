@@ -135,7 +135,7 @@ export default class ColorSide extends HTMLElement {
       let { x } = this.state;
       x = x < 0 ? 0 : x;
       const data = this._ctx.getImageData(x, 6, 1, 1)?.data;
-      const rgba = `rgb(${data[0]},${data[1]},${data[2]},${data[3]})`;
+      const rgba = `rgba(${data[0]},${data[1]},${data[2]},${data[3]})`;
       const color = {
         rgba,
         b16: toScale16(rgba),
