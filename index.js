@@ -1,15 +1,9 @@
-import ColorPicker from "./template/color-picker.js";
+import UptoColorPicker from "./template/index.js";
 
 const NAME = "upto-color-picker";
 
 if (typeof window != undefined) {
-  window.customElements.define(NAME, ColorPicker);
-  //   window.customElements
-  //     .whenDefined(NAME)
-  //     .then(() => {})
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
+  window.customElements.define(NAME, UptoColorPicker);
 }
 
-export default ColorPicker;
+export default UptoColorPicker;
