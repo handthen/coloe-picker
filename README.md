@@ -23,9 +23,12 @@
         // 可通过该方式适当修改样式，非必要不推荐
      }
 </style>
-    // 宽度跟随容器 wrapper
+// 宽度跟随容器 wrapper
 <div class="wrapper">
-    <upto-color-picker></upto-color-picker>
+    <upto-color-picker>
+         {/* right-inner 插槽 */}
+        <div slot="right-inner"></div>
+    </upto-color-picker>
 </div>
 ```
 
@@ -87,15 +90,16 @@ import "upto-color-picker"
 // page.tsx
 
 export default function App() {
+  function change(e){
+    console.log(e.nativeEvent.detail)
+  }
   return (
     <div>
-      <upto-color-picker></upto-color-picker>
+      <upto-color-picker onChange={change}></upto-color-picker>
     </div>
   );
 }
 
- function change(e){
-    console.log(e.detail)
- }
+
 
 ```
