@@ -1,12 +1,23 @@
 # upto-color-picker
 
-基于 webComponent 的颜色选择器
+基于 webComponent 的颜色选择器组件
 
-
-
-
+--------
 
 ## 使用
+
+
+|    属性   |  类型     |      描述     |
+| :-------: | :-------: |   :-------:   |
+| color    | string |  初始颜色值(仅支持16进制/RGB)  |
+| onchange   | (e)=>void  |   色值变化触发 |
+| connected    | (e)=>void| 组件挂载完成触发|
+| disconnected    | (e)=>void| 组件卸载完成触发|
+
+
+> connected/disconnected 在vue/react环境下，由于webComponent的挂载事件会优先与框架的挂载事件触发，建议直接使用对应框架的事件，
+
+--------
 
 ### 样式
 
@@ -31,7 +42,7 @@
     </upto-color-picker>
 </div>
 ```
-
+--------
 ### javascript
 
 ```js
@@ -39,21 +50,29 @@
 <script type="module" src="./dist/index.mjs"></script>
 
 <div>
-    <upto-color-picker onchange="change(event)" onload="load()"></upto-color-picker>
+    <upto-color-picker id="colorPicker" color='#f5f5f5'></upto-color-picker>
 </div>
 
 <script>
-    function load(){
-        console.log('挂在完成')
-    }
 
-    function change(e){
-        console.log(e.detail)  //{color:'',rgb_color:'',opacity:''}
+    colorPicker.addEventListener('connected',connected)
+    colorPicker.addEventListener('disconnected',disconnected)
+    colorPicker.addEventListener('change',disconnected)
+
+    function connected(){
+        console.log('connected')
+        colorPicker.color="#f6f6f6"
+    }
+    function disconnected(e){
+        console.log('disconnected')
+    }
+    function change(){
+       console.log(e.detail)  //{color:'',rgb_color:'',opacity:''}
     }
 </script>
 
 ```
-
+--------
 ### vue
 
 ```js
@@ -67,7 +86,7 @@ import "upto-color-picker"
 
 // page.vue
 <div>
-   <upto-color-picker @change="change"></upto-color-picker>
+   <upto-color-picker color='#f5f5f5' @change="change"></upto-color-picker>
 </div>
 
  function change(e){
@@ -75,7 +94,7 @@ import "upto-color-picker"
  }
 
 ```
-
+--------
 ### react
 
 ```js
@@ -85,21 +104,21 @@ import "upto-color-picker"
 // main.ts
 import "upto-color-picker"
 
-
-
 // page.tsx
 
+import { useState } from "react"
+
 export default function App() {
+  const [color,setColor] = useState()
+
   function change(e){
     console.log(e.nativeEvent.detail)
   }
   return (
     <div>
-      <upto-color-picker onChange={change}></upto-color-picker>
+      <upto-color-picker color={color} onChange={change}></upto-color-picker>
     </div>
   );
 }
-
-
 
 ```
