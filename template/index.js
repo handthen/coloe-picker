@@ -27,6 +27,7 @@ export default class UptoComponent extends HTMLElement {
       .upto-picker{
         width:100%;
         background:#fff;
+        height:100%;
        }
         .side-tool{
           display:flex;

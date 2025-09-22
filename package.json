@@ -12,6 +12,11 @@
     "dist",
     "types.d.ts"
   ],
+  "keyword": [
+    "color",
+    "javascript",
+    "webComponent"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/handthen/coloe-picker.git"
