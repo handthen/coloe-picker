@@ -9,8 +9,13 @@
     "build": "unbuild"
   },
   "files": [
-    "dist"
+    "dist",
+    "types.d.ts"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/handthen/coloe-picker.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

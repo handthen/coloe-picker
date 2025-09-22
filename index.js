@@ -1,3 +1,5 @@
+"use client";
+
 import UptoColorPicker from "./template/index.js";
 
 const NAME = "upto-color-picker";

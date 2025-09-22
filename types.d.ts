@@ -5,13 +5,13 @@ declare namespace React {
       // 为你的 color picker 组件添加类型定义
 
       "upto-color-picker": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          color?: string
-          onChange?: (event: CustomEvent) => void
+        {
+          color?: string;
+          onChange?: (event: CustomEvent) => void;
+          children?: React.ReactElement | React.ReactElement[];
         },
         HTMLElement
-      >
+      >;
     }
   }
 }
-
