@@ -4,7 +4,12 @@ export const B16Reg =
   /^#([a-zA-Z0-9]{2})([a-zA-Z0-9]{2})([a-zA-Z0-9]{2})([a-zA-Z0-9]{2})?/;
 export function toScale16(str) {
   if (!str) return str;
-  if (str[0] == "#") return str;
+  if (str[0] == "#") {
+    if (str.length == 4) {
+      return str + str.slice(1, 4);
+    }
+    return str;
+  }
   const match = str.match(RgbReg);
   if (!match) return str;
   const color = match.slice(1, 5).reduce((t, c, i) => {
@@ -29,7 +34,7 @@ export function toRgb(str) {
   if (!matchColor) return str;
   const RgbVal = matchColor
     .reduce((t, c, i) => {
-      if (c) {
+      if (c || Number(c) === 0) {
         let s = parseInt(c, 16);
         if (i == 3) {
           s = +Number(s / 255).toFixed(2);
@@ -54,6 +59,9 @@ export function findInterval(rgbMap, c) {
   const color = c.map(Number);
   const keys = Object.keys(rgbMap).map(Number);
   let best = { interval: null, t: null, dist: Infinity };
+  if (color.every((n) => [0, 255].includes(n))) {
+    return { interval: [0, 1], t: 0, dist: 0, keys };
+  }
 
   for (let i = 0; i < keys.length - 1; i++) {
     const start = rgbMap[keys[i]];
