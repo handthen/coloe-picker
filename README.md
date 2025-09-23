@@ -115,7 +115,7 @@ export default function App() {
     console.log(e.nativeEvent.detail)
   }
   return (
-    <div>
+    <div style={{width:500}}>
       <upto-color-picker color={color} onChange={change}></upto-color-picker>
     </div>
   );
