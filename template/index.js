@@ -161,11 +161,12 @@ export default class UptoComponent extends HTMLElement {
     switch (name) {
       case "color":
         const color = this.color;
-        if (color) {
-          this.state.color.b16 = toScale16(color);
-          this.state.color.rgb = toRgb(color);
-          this.setAttributeColor();
+        if (color === this.state.color.b16 || this.state.color.rgb === color) {
+          return;
         }
+        this.state.color.b16 = toScale16(color);
+        this.state.color.rgb = toRgb(color);
+        this.setAttributeColor();
         break;
     }
   }
