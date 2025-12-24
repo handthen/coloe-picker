@@ -3,7 +3,7 @@ export default {
   clean: true,
   rollup: {
     esbuild: {
-      minify: false,
+      minify: true,
     },
   },
 }

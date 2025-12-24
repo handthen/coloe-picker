@@ -129,10 +129,11 @@ export default class UptoComponent extends HTMLElement {
     this._emit("change");
   }
   setAttributeColor() {
-    const { b16, rgb } = this.state.color;
+    const { b16, rgb, opacity } = this.state.color;
     this._colorPicker.setAttribute("color", b16);
     this._colorSide.setAttribute("color", b16);
     this._colorOpacity.setAttribute("color", b16);
+    this._colorOpacity.setAttribute("opacity", opacity);
     this._sideToolInner.style.setProperty("background", rgb);
     this._colorSide.computedSideOffset();
     this._colorOpacity.computedSideOffset();
@@ -161,10 +162,31 @@ export default class UptoComponent extends HTMLElement {
     switch (name) {
       case "color":
         const color = this.color;
-        if (color&&newVal!=color) {
-          this.state.color.b16 = toScale16(color);
-          this.state.color.rgb = toRgb(color);
-          this.setAttributeColor();
+        if (color) {
+          const rgb = toRgb(color);
+          let matchStr = String(rgb).match(RgbReg);
+          if (!matchStr) {
+            return;
+          }
+          matchStr = matchStr.slice(1, 5);
+          this.state.color.rgb = rgbaToRgb(
+            matchStr[0],
+            matchStr[1],
+            matchStr[2],
+            1
+          );
+          const b16Color = toScale16(this.state.color.rgb);
+
+          if (this.state.color.b16 != b16Color) {
+            queueMicrotask(() => {
+              this.setAttributeColor();
+            });
+          }
+          this.state.color.b16 = b16Color;
+          const opacity = matchStr.at(-1);
+          if (opacity !== undefined) {
+            this.state.color.opacity = +opacity;
+          }
         }
         break;
     }
@@ -181,6 +203,7 @@ export default class UptoComponent extends HTMLElement {
     {
       // 本身带了透明度，先处转换成不带透明度
       const matchStr = String(rgb).match(RgbReg);
+
       if (matchStr) {
         const matchs = matchStr.slice(1, 5);
         if (matchs[matchs.length - 1]) {
@@ -191,7 +214,7 @@ export default class UptoComponent extends HTMLElement {
     }
 
     {
-      if (opacity <= 1) {
+      if (opacity < 1) {
         const matchStr = String(result.rgb_color).match(RgbReg);
         if (matchStr) {
           const matchs = matchStr.slice(1, 4);
@@ -201,7 +224,6 @@ export default class UptoComponent extends HTMLElement {
         }
       }
     }
-
     return result;
   }
   _emit(eventName = "change", data = {}) {

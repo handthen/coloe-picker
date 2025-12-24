@@ -11,6 +11,7 @@ export function toScale16(str) {
     return str;
   }
   const match = str.match(RgbReg);
+
   if (!match) return str;
   const color = match.slice(1, 5).reduce((t, c, i) => {
     if (c) {
@@ -31,6 +32,7 @@ export function toScale16(str) {
 export function toRgb(str) {
   if (!str || str.indexOf("rgb") != -1) return str;
   const matchColor = str.match(B16Reg)?.slice(1, 5) ?? [];
+
   if (!matchColor) return str;
   const RgbVal = matchColor
     .reduce((t, c, i) => {
@@ -44,7 +46,6 @@ export function toRgb(str) {
       return t;
     }, "")
     .slice(0, -1);
-
   return "rgb" + "(" + RgbVal + ")";
 }
 

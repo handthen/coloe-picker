@@ -29,10 +29,6 @@
     .wrapper{
         width:300px;
     }
-     {/* 或者 */}
-    .picker::part(upto-picker) {
-        // 可通过该方式适当修改样式，非必要不推荐
-     }
 </style>
 // 宽度跟随容器 wrapper
 <div class="wrapper">

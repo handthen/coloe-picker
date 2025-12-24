@@ -1,4 +1,4 @@
-import { toRgb,RgbReg } from "../utils/index.js";
+import { toRgb, RgbReg } from "../utils/index.js";
 
 const body = `
 <style>
@@ -46,7 +46,7 @@ export default class ColorOpacity extends HTMLElement {
     targetX: 0,
     oldX: 0,
   };
-  static observedAttributes = ["color"];
+  static observedAttributes = ["color", "opacity"];
   constructor() {
     super();
     const shadow = this.attachShadow({ mode: "open" });
@@ -102,6 +102,9 @@ export default class ColorOpacity extends HTMLElement {
         this.initCanvasColor();
         this._init = true;
         break;
+      case "opacity":
+        this.computedSideOffset();
+        break;
     }
   }
 
@@ -139,13 +142,8 @@ export default class ColorOpacity extends HTMLElement {
     this._emit();
   }
   computedSideOffset() {
-    const color = this.color;
-    if (color) {
-      const RgbColor = toRgb(color);
-      const matchs = RgbColor.match(RgbReg);
-      if (!matchs) return;
-      const [_,__,___,opacity] = matchs.slice(1,5)
-      if (!opacity) return;
+    const opacity = this.opacity;
+    if (opacity !== undefined) {
       const offset = opacity * this.state.width - 12;
       this.setPosition({ x: offset });
     }
@@ -164,5 +162,8 @@ export default class ColorOpacity extends HTMLElement {
   }
   get color() {
     return this.getAttribute("color");
+  }
+  get opacity() {
+    return this.getAttribute("opacity");
   }
 }

@@ -151,7 +151,7 @@ class ColorPicker extends HTMLElement {
       x = x <= 0 ? 0 : x+6;
       y = y <= 0 ? 0 : y+6;
       const data = this._ctx.getImageData(x, y, 1, 1)?.data;
-      const rgba = `rgba(${data[0]},${data[1]},${data[2]},${data[3] / 255})`;
+      const rgba = `rgba(${data[0]},${data[1]},${data[2]})`;
       const color = {
         rgba,
         b16: toScale16(rgba),
