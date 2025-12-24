@@ -145,7 +145,7 @@ export default class UptoComponent extends HTMLElement {
       this.setAttributeColor();
     }
     this._emit("connected", {
-      opacity: 1,
+      opacity: this.state.color.opacity,
       color: color,
       rgb_color: toRgb(color),
     });
@@ -161,12 +161,11 @@ export default class UptoComponent extends HTMLElement {
     switch (name) {
       case "color":
         const color = this.color;
-        if (color === this.state.color.b16 || this.state.color.rgb === color) {
-          return;
+        if (color&&newVal!=color) {
+          this.state.color.b16 = toScale16(color);
+          this.state.color.rgb = toRgb(color);
+          this.setAttributeColor();
         }
-        this.state.color.b16 = toScale16(color);
-        this.state.color.rgb = toRgb(color);
-        this.setAttributeColor();
         break;
     }
   }
